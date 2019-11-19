@@ -1,4 +1,4 @@
-# Node JS - JWT Authentication
+# Node JS - JWT Authentication with role based authorization
 
 This project is a sample of how to use JWT Authentication in Node JS APIs.
 
@@ -52,6 +52,15 @@ POST /api/users/register
 GET /api/users
 ```
 
+### Assign the User to the "admin" Role
+
+```
+POST /api/users/USER_ID/assign-role
+{
+    "role": "admin"
+}
+```
+
 ### Login (this returns the JWS Token)
 
 ```
@@ -71,6 +80,16 @@ RESPONSE
 
 ```
 GET /api/users/my-information
+HEADERS: {
+    "Authorization": "THE_JWT_TOKEN"
+}
+```
+
+
+### Access Admin Content
+
+```
+GET /api/users/only-admin
 HEADERS: {
     "Authorization": "THE_JWT_TOKEN"
 }

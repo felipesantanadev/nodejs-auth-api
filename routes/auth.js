@@ -16,6 +16,22 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.post('/:id/assign-role', async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if(!user) return res.status(404).send('User not found.');
+        if(!req.body.role) return res.status(400).send('The "role" parameter is required.');
+
+        user.roles.push(req.body.role);
+        const result = await User.updateOne({ _id: req.params.id }, { roles: user.roles });
+        return res.json(result);
+    }
+    catch(err){
+        console.log(err);
+        return res.status(501).json(err);
+    }
+});
+
 router.post('/register', async (request, response) => {
     try{
         const {error} = userValidation.registerValidation(request.body);
@@ -55,7 +71,7 @@ router.post('/login', async (request, response) => {
         if(!validPassword) return response.status(404).send('Email or password is not valid.');
 
         // Create Token
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+        const token = jwt.sign({ id: user._id, roles: user.roles }, process.env.JWT_SECRET);
         response.header('auth_token', token);
         return response.json({ auth_token: token });
     } catch(err){
@@ -77,6 +93,10 @@ router.get('/my-information', authorize, async (req, res) => {
     catch(err) {
         return res.status(501).json(err);
     }
+});
+
+router.get('/only-admin', authorize(roles = ["admin"]), async (req, res, roles = ["user"]) => {
+    res.send('Success.');
 });
 
 module.exports = router;
