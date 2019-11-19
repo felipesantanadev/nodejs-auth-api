@@ -1,4 +1,4 @@
-# Node JS - JWT Authentication with role based authorization
+# Node JS - JWT with role based authorization
 
 This project is a sample of how to use JWT Authentication in Node JS APIs.
 
