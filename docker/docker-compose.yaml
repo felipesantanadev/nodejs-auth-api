@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+    mongo:
+        container_name: mongo
+        image: mongo
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: mongouser
+            MONGO_INITDB_ROOT_PASSWORD: mongopassword
+        ports:
+            - "27017:27017"
+        volumes:
+            - mongodbdata:/data/db
+        networks:
+            - mongo-compose-network
+
+    mongo-express:
+        image: mongo-express
+        ports:
+            - 8081:8081
+        environment:
+            ME_CONFIG_BASICAUTH_USERNAME: admin
+            ME_CONFIG_BASICAUTH_PASSWORD: 123456
+            ME_CONFIG_MONGODB_PORT: 27017
+            ME_CONFIG_MONGODB_ADMINUSERNAME: mongouser
+            ME_CONFIG_MONGODB_ADMINPASSWORD: mongopassword
+            ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
+        links:
+            - "mongo"
+        depends_on:
+            - "mongo"
+        networks:
+            - mongo-compose-network
+
+networks:
+    mongo-compose-network:
+        driver: bridge
+
+volumes:
+    mongodbdata:
+        external: true

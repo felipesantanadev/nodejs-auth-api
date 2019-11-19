@@ -1,0 +1,35 @@
+db.createRole(
+   {
+     role: "nodeapi-root",
+     privileges: [
+       { resource: { db: "node-api", collection: "" }, actions: [ "find", "update", "insert", "remove" ] },
+       { resource: { db: "node-api", collection: "usersCollection" }, actions: [ "update", "insert", "remove" ] },
+       { resource: { db: "node-api", collection: "" }, actions: [ "find" ] }
+     ],
+     roles: []
+   },
+   { w: "majority" , wtimeout: 5000 }
+)
+
+
+// The grantPrivilegesToRole() method uses the following syntax:
+
+db.grantPrivilegesToRole(
+    "root",
+    [
+        { resource: { db: "node-api", collection: "" }, actions: [ "find", "update", "insert", "remove" ] },
+       { resource: { db: "node-api", collection: "usersCollection" }, actions: [ "update", "insert", "remove" ] }
+    ],
+    { w: "majority" , wtimeout: 5000 }
+)
+
+
+db.createUser({
+                "user" : "nodeapi_user",
+		"pwd": "nodeapi_password",
+                "roles" : ["nodeapi-root"],
+                "mechanisms" : [
+                        "SCRAM-SHA-1",
+                        "SCRAM-SHA-256"
+                ]
+})
